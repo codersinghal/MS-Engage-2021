@@ -12,8 +12,7 @@ const { API_PORT } = process.env;
 const port = process.env.PORT || API_PORT;
 
 app.use(require('./routes/auth'));
-app.use(require('./routes/scheduledClasses'));
-app.use(require('./routes/bookedClasses'));
+app.use(require('./routes/others'));
 
 // server listening 
 server.listen(port, () => {
