@@ -52,6 +52,7 @@ class Schedule extends Component {
 
   // to get all teams of user
   async getTeams(userID){
+    console.log('getting teams')
     return [];
   }
 
