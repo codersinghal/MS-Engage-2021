@@ -5,15 +5,16 @@ import { BrowserRouter, Route, Redirect, Switch,Routes } from "react-router-dom"
 import AuthContext from './context/authContext'
 import Login from './components/Login/login';
 import Register from './components/Register/register' 
+import Landing from './components/Landing/landing'
+import Schedule from './components/Schedule/Schedule'
 class App extends Component {
   state = {
     token: null,
-    userId: null,
-    isTeacher:true
+    userId: null
   };
 
-  login = (token, userId, isTeacher) => {
-    this.setState({ token: token, userId: userId, isTeacher:isTeacher });
+  login = (token, userId) => {
+    this.setState({ token: token, userId: userId });
   };
 
   logout = () => {
@@ -28,27 +29,23 @@ class App extends Component {
             value={{
               token: this.state.token,
               userId: this.state.userId,
-              isTeacher: this.state.isTeacher,
               login: this.login,
               logout: this.logout
             }}
           >
-            
+
             <Route exact path="/">
               <Login/>
+              <Landing/>
             </Route>
             <Route path='/register'>
               <Register/>
+              <Landing/>
             </Route>
-              <div className="heading">
-          <div className="title">
-            <h1>LIDO</h1>
-            <p>Schedule and Book your classes here !!</p>
-          </div>
-
-          <div className="thumbnail"></div>
-        </div>
-        <div className="footer"></div> 
+            <Route path='/dashboard'>
+              <Schedule/>
+            </Route>
+              
           </AuthContext.Provider>
         </React.Fragment>
       </BrowserRouter>
