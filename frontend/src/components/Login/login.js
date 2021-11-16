@@ -4,6 +4,7 @@ import "./login.css";
 import Ripples from "react-ripples";
 import { Link } from "react-router-dom";
 import AuthContext from "../../context/authContext";
+import auth_services from '../../services/auth_services'
 
 export default class Login extends Component {
 
@@ -34,31 +35,11 @@ export default class Login extends Component {
   };
 
   checkUser = () => {
-    fetch("http://localhost:4001/login",
-
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: this.state.email,
-          password: this.state.password,
-        }),
-      }
-    )
-      .then((res) => {
-        if (res.statusText === "Unauthorized") {
-          return { msg: "Invalid email or password" };
-        } else {
-          return res.json();
-        }
-      })
-      .then((data) => {
-        if (data.msg) this.props.showError(data.msg);
-        else this.context.login(data.token, data.userId, data.isTeacher);
-      });
+    auth_services.login_service(this.state.email,this.state.password).then((res)=>{
+           console.log(res);
+    }).catch((err)=>{
+      console.log(err)
+    })
   };
   componentDidMount(){
     console.log("Login component mounted");

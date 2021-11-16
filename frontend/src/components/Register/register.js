@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "./register.css";
 import Ripples from "react-ripples";
 import AuthContext from '../../context/authContext'
+import auth_services from '../../services/auth_services';
 
 export default class Register extends Component {
 
@@ -12,7 +13,8 @@ export default class Register extends Component {
     super(props);
     this.state = {
       email: "",
-      username: "",
+      first_name: "",
+      lat_name:"",
       password: "",
       confirmPassword: "",
       showPassword:false,
@@ -64,29 +66,11 @@ export default class Register extends Component {
     e.preventDefault();
     if (this.state.password === this.state.confirmPassword) { 
       // make api call to register user
-      fetch(process.env.NODE_ENV==='production'?"https://whispering-falls-52777.herokuapp.com/register":
-      "http://localhost:5000/register", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: this.state.email,
-          password: this.state.password,
-          name: this.state.username,
-        }),
+      auth_services.register_service(this.state.first_name,this.state.lat_name,this.state.email,this.state.password).then((res)=>{
+        console.log(res);
+      }).catch((err)=>{
+        console.log(err);
       })
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          let error = data.msg;
-          if (error) this.props.showError(error);
-          else {
-            this.context.login(data.token,data.userId, data.isTeacher);
-          }
-        });
     } else {
       // Show flash about error
       this.props.showError("Password do not match");

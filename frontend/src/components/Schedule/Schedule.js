@@ -17,6 +17,7 @@ import moment from 'moment'
 import BigCalendar from 'react-big-calendar'
 import AuthContext from '../../context/authContext'
 import Stepper from '../IntroStepper/introStepper'
+import services from '../../services/other_services'
 require("react-big-calendar/lib/css/react-big-calendar.css");
 
 BigCalendar.momentLocalizer(moment);
@@ -50,30 +51,27 @@ class Schedule extends Component {
     this.handleClose = this.handleClose.bind(this);
   }
 
-  // to get all teams of user
-  async getTeams(userID){
-    console.log('getting teams')
-    return [];
-  }
+
 
   // get teams and set states on component mount
   async componentDidMount(){
-    var myTeams=await this.getTeams(this.context.userID);
-    this.setState({teams:myTeams})
-    if(myTeams.length>0)
-    {
-      this.setState({teamID:myTeams[0].teamID})
-      this.setState({teamName:myTeams[0].teamName})
-      this.setState({teamCode:myTeams[0].teamCode})
-      if(this.state.teamCode)
-      {
-        this.state.isAdmin=true
-      }
-    }
-    if(this.state.teamID)
-    {
-      this.state.events=await this.getEvents(teamID)
-    }
+    var myTeams=await services.getTeams_service(this.context.userID)
+    console.log(myTeams)
+    // this.setState({teams:myTeams})
+    // if(myTeams.length>0)
+    // {
+    //   this.setState({teamID:myTeams[0].teamID})
+    //   this.setState({teamName:myTeams[0].teamName})
+    //   this.setState({teamCode:myTeams[0].teamCode})
+    //   if(this.state.teamCode)
+    //   {
+    //     this.state.isAdmin=true
+    //   }
+    // }
+    // if(this.state.teamID)
+    // {
+    //   this.state.events=await this.getEvents(teamID)
+    // }
 
   }
 
