@@ -1,11 +1,12 @@
 require("dotenv").config();
 require("./config/database").connect();
+cors=require('cors')
 const express = require("express");
 const http = require("http");
 const app = express();
 
 app.use(express.json());
-
+app.use(cors())
 const server = http.createServer(app);
 
 const { API_PORT } = process.env;
