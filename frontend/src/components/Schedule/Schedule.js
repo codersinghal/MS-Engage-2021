@@ -30,6 +30,7 @@ class Schedule extends Component {
   constructor() {
     super();
     this.state = {
+      userID:null,
       teams:[],
       teamID:null,
       teamName:null,
@@ -48,6 +49,7 @@ class Schedule extends Component {
       createNewTeamOpen:false,
       clickedEventID:null
     };
+    this.state.userID=localStorage.getItem('userID');
     this.handleClose = this.handleClose.bind(this);
   }
 
@@ -55,19 +57,21 @@ class Schedule extends Component {
 
   // get teams and set states on component mount
   async componentDidMount(){
-    var myTeams=await services.getTeams_service(this.context.userID)
+    console.log(this.context.userID)
+    var myTeams=await services.getTeams_service(this.state.userID)
     console.log(myTeams)
-    // this.setState({teams:myTeams})
-    // if(myTeams.length>0)
-    // {
-    //   this.setState({teamID:myTeams[0].teamID})
-    //   this.setState({teamName:myTeams[0].teamName})
-    //   this.setState({teamCode:myTeams[0].teamCode})
-    //   if(this.state.teamCode)
-    //   {
-    //     this.state.isAdmin=true
-    //   }
-    // }
+    myTeams=myTeams.teams;
+    this.setState({teams:myTeams})
+    if(myTeams.length>0)
+    {
+      this.setState({teamID:myTeams[0]._id})
+      this.setState({teamName:myTeams[0].teamName})
+      // this.setState({teamCode:myTeams[0].teamCode})
+      // if(this.state.teamCode)
+      // {
+      //   this.state.isAdmin=true
+      // }
+    }
     // if(this.state.teamID)
     // {
     //   this.state.events=await this.getEvents(teamID)
@@ -164,7 +168,8 @@ class Schedule extends Component {
   async createNewTeam() {
     if(!this.state.newTeamName)
         return ;
-    var resp=await createNewTeamService(this.state.newTeamName,authContext.userID)
+    var resp=await services.createNewTeam_service(this.state.userID,this.state.newTeamName);
+    this.setState({teams:resp.teams})
     this.setState({newTeamName:null})
   }
 
@@ -177,7 +182,8 @@ class Schedule extends Component {
   async joinNewTeam() {
     if(!this.state.joinTeamCode)
       return ;
-    var resp=await joinNewTeamService(this.state.joinTeamCode,authContext.userID)
+    var resp=await services.joinNewTeam_service(this.state.userID,this.state.joinTeamCode);
+    this.setState({teams:resp.teams});
     this.setState({joinTeamCode:null});  
   }
 
@@ -283,7 +289,7 @@ class Schedule extends Component {
         <div className='App'>
           {this.state.teamID &&
           <React.Fragment>
-            <h1>MNNIT CC CLUB</h1>
+            <h1>{this.state.teamName}</h1>
             { this.state.isAdmin &&
             <Chip style={{margin:'auto'}} onClick={()=>this.handleCopyCode}>
           <Avatar size={32}>C</Avatar>
@@ -299,6 +305,7 @@ class Schedule extends Component {
       <div id="Calendar">
         {/* react-big-calendar library utilized to render calendar*/}
         {this.state.teamID &&
+        
         <BigCalendar
           events={this.state.events}
           views={["month", "week", "day"]}
@@ -309,6 +316,7 @@ class Schedule extends Component {
           onSelectEvent={event => this.handleEventSelected(event)}
           onSelectSlot={slotInfo => this.handleSlotSelected(slotInfo)}
         />
+        
   }
         
         {/* Material-ui Modal for booking new appointment */}

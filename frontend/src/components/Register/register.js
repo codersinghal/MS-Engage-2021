@@ -66,6 +66,7 @@ export default class Register extends Component {
       // make api call to register user
       auth_services.register_service(this.state.first_name,this.state.last_name,this.state.email,this.state.password).then((res)=>{
         console.log(res);
+        this.context.login(res.token,res.userID)
       }).catch((err)=>{
         console.log(err);
       })

@@ -19,9 +19,9 @@ export default {
         }
     },
 
-    login_service: async function(username,password) {
+    login_service: async function(email,password) {
         try {
-            const body={username:username,password:password};
+            const body={email:email,password:password};
             const resp=await client.post('/login',body);
             return resp.data;
         } catch (error) {

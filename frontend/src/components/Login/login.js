@@ -37,6 +37,7 @@ export default class Login extends Component {
   checkUser = () => {
     auth_services.login_service(this.state.email,this.state.password).then((res)=>{
            console.log(res);
+           this.context.login(res.token,res.userID)
     }).catch((err)=>{
       console.log(err)
     })

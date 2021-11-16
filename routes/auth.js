@@ -48,7 +48,8 @@ router.post("/register", async (req, res) => {
       user.token = token;
   
       // return new user
-      res.status(201).json(user);
+      const resp={userID:user._id,first_name:user.first_name,last_name:user.last_name,token:user.token,email:user.email}
+      res.status(200).json(resp);
     } catch (err) {
       console.log(err);
     }
@@ -79,8 +80,8 @@ router.post("/register", async (req, res) => {
         // save user token
         user.token = token;
   
-        // user
-        res.status(200).json(user);
+      const resp={userID:user._id,first_name:user.first_name,last_name:user.last_name,token:user.token,email:user.email}
+      res.status(200).json(resp);
       }
       else
       res.status(400).send("Invalid Credentials");

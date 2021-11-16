@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import React,{Component} from 'react';
 import { BrowserRouter, Route, Redirect, Switch,Routes } from "react-router-dom";
@@ -10,15 +9,18 @@ import Schedule from './components/Schedule/Schedule'
 class App extends Component {
   state = {
     token: null,
-    userId: null
+    userID: null
   };
 
-  login = (token, userId) => {
-    this.setState({ token: token, userId: userId });
+  login = (token, userID) => {
+    this.setState({ token: token, userID: userID });
+    localStorage.setItem('token',this.state.token)
+    localStorage.setItem('userID',this.state.userID)
   };
 
   logout = () => {
-    this.setState({ token: null, userId: null });
+    this.setState({ token: null, userID: null });
+    localStorage.clear();
   };
 
   render(){
@@ -28,12 +30,16 @@ class App extends Component {
           <AuthContext.Provider
             value={{
               token: this.state.token,
-              userId: this.state.userId,
+              userID: this.state.userID,
               login: this.login,
               logout: this.logout
             }}
           >
-
+            <Switch>
+            {localStorage.getItem('token') && <Redirect from="/" to="/dashboard" exact />}
+                {localStorage.getItem('token') && (
+                  <Redirect from="/register" to="/dashboard" exact />
+                )}
             <Route exact path="/">
               <Login/>
               <Landing/>
@@ -45,7 +51,7 @@ class App extends Component {
             <Route path='/dashboard'>
               <Schedule/>
             </Route>
-              
+            </Switch>
           </AuthContext.Provider>
         </React.Fragment>
       </BrowserRouter>
