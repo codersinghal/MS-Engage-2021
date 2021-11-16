@@ -14,12 +14,11 @@ export default class Register extends Component {
     this.state = {
       email: "",
       first_name: "",
-      lat_name:"",
+      last_name:"",
       password: "",
       confirmPassword: "",
       showPassword:false,
-      showConfirmPassword:false,
-      isTeacher:true
+      showConfirmPassword:false
     };
   }
   showPassword=()=>{
@@ -33,15 +32,14 @@ export default class Register extends Component {
     }))
   }
 
-  registerAsTeacher=()=>{
-      this.setState(prevState=>({
-          isTeacher:!prevState.isTeacher,
-      }))
-  }
-
-  handleUsernameChange = (e) => {
+  handleFirstNameChange = (e) => {
     this.setState({
-      username: e.target.value,
+      first_name: e.target.value,
+    });
+  };
+  handleLastNameChange = (e) => {
+    this.setState({
+      last_name: e.target.value,
     });
   };
   handleEmailChange = (e) => {
@@ -66,7 +64,7 @@ export default class Register extends Component {
     e.preventDefault();
     if (this.state.password === this.state.confirmPassword) { 
       // make api call to register user
-      auth_services.register_service(this.state.first_name,this.state.lat_name,this.state.email,this.state.password).then((res)=>{
+      auth_services.register_service(this.state.first_name,this.state.last_name,this.state.email,this.state.password).then((res)=>{
         console.log(res);
       }).catch((err)=>{
         console.log(err);
@@ -84,13 +82,23 @@ export default class Register extends Component {
         <div className="card-body">
           <form id="register">
             <div className="form-group">
-              <label className="col-form-label">Name</label>
+              <label className="col-form-label">First Name</label>
               <input
                 className="form-control"
                 type="text"
-                value={this.state.username}
-                onChange={this.handleUsernameChange}
-                placeholder="Enter Name"
+                value={this.state.first_name}
+                onChange={this.handleFirstNameChange}
+                placeholder="Enter First Name"
+              />
+            </div>
+            <div className="form-group">
+              <label className="col-form-label">Last Name</label>
+              <input
+                className="form-control"
+                type="text"
+                value={this.state.last_name}
+                onChange={this.handleLastNameChange}
+                placeholder="Enter Last Name"
               />
             </div>
             <div className="form-group">
@@ -125,9 +133,6 @@ export default class Register extends Component {
                 placeholder="Enter Password"
               />
               <span style={{fontSize:"12px"}}><input style={{width:"10px",height:"10px",margin:"5px"}}  type="checkbox" onClick={this.showConfirmPassword} />show password</span>              
-            </div>
-            <div>
-            <span style={{fontSize:"16px"}}><input style={{width:"14px",height:"14px",margin:"5px"}}  type="checkbox" onClick={this.registerAsTeacher} />Register As a Student</span>
             </div>
             <div>
             <span id="note">

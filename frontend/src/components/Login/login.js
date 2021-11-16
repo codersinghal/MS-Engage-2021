@@ -78,7 +78,7 @@ export default class Login extends Component {
           </form>
         </div>
         <Ripples>
-          <button className="btn btn-primary">
+          <button className="btn btn-primary" onClick={this.checkUser}>
             Login
           </button>
         </Ripples>
