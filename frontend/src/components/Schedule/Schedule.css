@@ -1,0 +1,55 @@
+.App {
+    text-align: center;
+    padding: 15px;
+  }
+  h1{
+    color: rgb(255, 166, 0);
+  }
+  
+  #Calendar {
+    height: 100%;
+    width: 80%;
+    margin: auto;
+    margin-top:50px;
+    margin-bottom: 50px;
+    /* background: yellow; */
+  }
+  
+  .rbc-month-view{
+    flex-basis: 500px !important;
+  }
+  
+  .rbc-toolbar-label {
+    font-weight: bold;
+    font-size: 22px;
+    color: rgb(37, 66, 197)
+  }
+  
+  .rbc-date-cell {
+    color: rgb(15, 114, 226);
+  }
+  
+  .rbc-today {
+    background-color: rgb(196, 226, 250) !important;
+  }
+  
+  @media (max-width: 480px) {
+    .rbc-toolbar {
+      display: block !important;
+    }
+  }
+
+  .content {
+    width: fit-content;
+    height: 600px;
+    position: absolute; /*Can also be `fixed`*/
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    /*Solves a problem in which the content is being cut when the div is smaller than its' wrapper:*/
+    max-width: 100%;
+    max-height: 100%;
+    overflow: auto;
+}
