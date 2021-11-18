@@ -5,8 +5,22 @@ var scheduleID=require('./Schedules')
 const schema = new Schema({
     teamName:{type:String,required:true},
     teamCode:{type:String,required:true},
-    teamAdmins:[{type:mongoose.Types.ObjectId,ref:'user'}],
-    teamMembers:[{type:mongoose.Types.ObjectId,ref:'user'}],
-    schedules:[{type:mongoose.Types.ObjectId,ref:'Schedule'}]
+    teamAdmins:[{
+        adminID:{type:mongoose.Types.ObjectId,ref:'user'},
+        adminFirstName:{type:String},
+        adminLastName:{type:String}
+    }],
+    teamMembers:[{
+        memberID:{type:mongoose.Types.ObjectId,ref:'user'},
+        memberFirstName:{type:String},
+        memberLastName:{type:String}
+    }],
+    schedules:[{
+        scheduleID:{type:mongoose.Types.ObjectId,ref:'Schedule'},
+        title:{type:String,required:true},
+        desc:{type:String},
+        start:{type:Date,required:true},
+        end:{type:Date,required:true}
+    }]
 })
 module.exports = mongoose.model('Team', schema)

@@ -25,7 +25,7 @@ router.post("/register", async (req, res) => {
       const oldUser = await User.findOne({ email });
   
       if (oldUser) {
-        return res.status(409).send("User Already Exist. Please Login");
+        return res.status(400).send("User Already Exist. Please Login");
       }
   
       //Encrypt user password
@@ -51,6 +51,7 @@ router.post("/register", async (req, res) => {
       const resp={userID:user._id,first_name:user.first_name,last_name:user.last_name,token:user.token,email:user.email}
       res.status(200).json(resp);
     } catch (err) {
+      res.status(500).send('Something went wrong')
       console.log(err);
     }
     // Our register logic ends here
@@ -62,7 +63,7 @@ router.post("/register", async (req, res) => {
     try {
       // Get user input
       const { email, password } = req.body;
-  
+      console.log(req.body)
       // Validate user input
       if (!(email && password)) {
         res.status(400).send("All input is required");
@@ -84,8 +85,12 @@ router.post("/register", async (req, res) => {
       res.status(200).json(resp);
       }
       else
+      {
+      console.log('invalid')  
       res.status(400).send("Invalid Credentials");
+      }
     } catch (err) {
+      res.status(500).send('Something went wrong')
       console.log(err);
     }
     // Our register logic ends here

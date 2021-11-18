@@ -15,7 +15,7 @@ export default {
             return resp.data;
             
         } catch (error) {
-            throw error;
+            throw error.response.data;
         }
     },
 
@@ -25,7 +25,7 @@ export default {
             const resp=await client.post('/login',body);
             return resp.data;
         } catch (error) {
-            throw error
+            throw error.response.data
         }
     }
 }

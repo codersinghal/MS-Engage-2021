@@ -5,6 +5,9 @@ import Ripples from "react-ripples";
 import { Link } from "react-router-dom";
 import AuthContext from "../../context/authContext";
 import auth_services from '../../services/auth_services'
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure()
 
 export default class Login extends Component {
 
@@ -38,8 +41,15 @@ export default class Login extends Component {
     auth_services.login_service(this.state.email,this.state.password).then((res)=>{
            console.log(res);
            this.context.login(res.token,res.userID)
+           toast.success('Login Successful', {
+            // Set to 3 sec
+            position: toast.POSITION.BOTTOM_LEFT, autoClose:3000})
     }).catch((err)=>{
       console.log(err)
+      toast.error(err, {
+        // Set to 3 sec
+        position: toast.POSITION.BOTTOM_LEFT, autoClose:3000})
+
     })
   };
   componentDidMount(){

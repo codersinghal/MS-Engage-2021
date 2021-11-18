@@ -5,7 +5,10 @@ const userSchema = new mongoose.Schema({
   last_name: { type: String, default: null },
   email: { type: String, unique: true },
   password: { type: String },
-  teams:[{type:mongoose.Types.ObjectId,ref:'Team'}],
+  teams:[{
+    teamID:{type:mongoose.Types.ObjectId,ref:'Team'},
+    teamName:{type:String}
+  }],
   token: { type: String },
 });
 

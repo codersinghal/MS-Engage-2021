@@ -18,6 +18,9 @@ import BigCalendar from 'react-big-calendar'
 import AuthContext from '../../context/authContext'
 import Stepper from '../IntroStepper/introStepper'
 import services from '../../services/other_services'
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure()
 require("react-big-calendar/lib/css/react-big-calendar.css");
 
 BigCalendar.momentLocalizer(moment);
@@ -58,24 +61,23 @@ class Schedule extends Component {
   // get teams and set states on component mount
   async componentDidMount(){
     console.log(this.context.userID)
-    var myTeams=await services.getTeams_service(this.state.userID)
+    try {
+      var myTeams=await services.getTeams_service(this.state.userID)
     console.log(myTeams)
     myTeams=myTeams.teams;
     this.setState({teams:myTeams})
     if(myTeams.length>0)
     {
-      this.setState({teamID:myTeams[0]._id})
-      this.setState({teamName:myTeams[0].teamName})
-      // this.setState({teamCode:myTeams[0].teamCode})
-      // if(this.state.teamCode)
-      // {
-      //   this.state.isAdmin=true
-      // }
+      await this.setTeamStates(myTeams[0].teamID,myTeams[0].teamName)
     }
-    // if(this.state.teamID)
-    // {
-    //   this.state.events=await this.getEvents(teamID)
-    // }
+    
+    } catch (error) {
+      console.log(error)
+      toast.error(error, {
+        // Set to 8sec
+        position: toast.POSITION.BOTTOM_LEFT, autoClose:3000})
+    }
+    
 
   }
 
@@ -101,7 +103,7 @@ class Schedule extends Component {
     console.log("event", event);
     this.setState({
       openEvent: true,
-      clickedEventID: event.eventID,
+      clickedEventID: event.scheduleID,
       start: event.start,
       end: event.end,
       title: event.title,
@@ -132,25 +134,68 @@ class Schedule extends Component {
   // allows admin to create new event
   async setNewAppointment() {
     const { start, end, title, desc } = this.state;
-    let appointment = { title, start, end, desc };
-    let events = await addNewEvent(this.state.teamID,appointment)
-    this.setState({ events });
+    try {
+      const resp = await services.createNewEvent_service(this.state.teamID,title,desc,start,end)
+      resp.start=new Date(resp.start)
+      resp.end=new  Date(resp.end)
+      let events=this.state.events.slice();
+      events.push(resp);
+      this.setState({events:events});
+      toast.success('Event Created Successfully', {
+        // Set to 3 sec
+        position: toast.POSITION.BOTTOM_LEFT, autoClose:3000})
+    } catch (error) {
+      toast.error(error, {
+        // Set to 3 sec
+        position: toast.POSITION.BOTTOM_LEFT, autoClose:3000})
+    }
+    
   }
 
   //  allows admin to update existing event
   async updateEvent() {
     const { title, desc, start, end, events, clickedEventID } = this.state;
-    let appointment={title,start,end,desc}
-    let updatedEvents=await updateEventService(this.state.teamID,clickedEventID,appointment)
+    try {
+      const updatedEvent=await services.updateEvent_service(this.state.teamID,title,desc,start,end,clickedEventID);
+      console.log(updatedEvent)
+    const index=events.findIndex(event=> event.scheduleID===clickedEventID)
+    console.log(index)
+    const updatedEvents=this.state.events.slice();
+    updatedEvents[index].title=updatedEvent.title;
+    updatedEvents[index].desc=updatedEvent.desc;
+    updatedEvents[index].start=new Date(updatedEvent.start);
+    updatedEvents[index].end=new Date(updatedEvent.end);
     this.setState({
       events: updatedEvents
     });
+    toast.success('Event Updated Successfully', {
+      // Set to 3 sec
+      position: toast.POSITION.BOTTOM_LEFT, autoClose:3000})
+    } catch (error) {
+       console.log(error)
+       toast.error(error, {
+        // Set to 3 sec
+        position: toast.POSITION.BOTTOM_LEFT, autoClose:3000})
+    }
+    
   }
 
   // allows admin to delete existing event
   async deleteEvent() {
-    let updatedEvents = await deleteEventService(this.state.teamID,this.state.clickedEventID)
-    this.setState({ events: updatedEvents });
+    try {
+      const resp= await services.deleteEvent_service(this.state.teamID,this.state.clickedEventID)
+      var updatedEvents=this.state.events.slice();
+      updatedEvents.filter(event=>event.scheduleID!==this.state.scheduleID)
+      this.setState({ events: updatedEvents });
+      toast.success('Event Deleted Successfully', {
+        // Set to 3 sec
+        position: toast.POSITION.BOTTOM_LEFT, autoClose:3000})
+    } catch (error) {
+      toast.error(error, {
+        // Set to 3 sec
+        position: toast.POSITION.BOTTOM_LEFT, autoClose:3000})
+    }
+    
   }
 
   // copy team joining code to clipboard
@@ -168,9 +213,22 @@ class Schedule extends Component {
   async createNewTeam() {
     if(!this.state.newTeamName)
         return ;
-    var resp=await services.createNewTeam_service(this.state.userID,this.state.newTeamName);
-    this.setState({teams:resp.teams})
-    this.setState({newTeamName:null})
+        try {
+          var resp=await services.createNewTeam_service(this.state.userID,this.state.newTeamName);
+          toast.success('Team Created Successfully', {
+            // Set to 8sec
+            position: toast.POSITION.BOTTOM_LEFT, autoClose:3000})
+          this.setState({newTeamName:null})
+
+          // making api call to get list of updated teams 
+          var teamsResp=await services.getTeams_service(this.state.userID);  
+          this.setState({teams:teamsResp.teams})
+        } catch (error) {
+          toast.error('Something went wrong', {
+            // Set to 8sec
+            position: toast.POSITION.BOTTOM_LEFT, autoClose:3000})
+        }
+    
   }
 
   // opens modal for join team
@@ -182,18 +240,62 @@ class Schedule extends Component {
   async joinNewTeam() {
     if(!this.state.joinTeamCode)
       return ;
-    var resp=await services.joinNewTeam_service(this.state.userID,this.state.joinTeamCode);
-    this.setState({teams:resp.teams});
-    this.setState({joinTeamCode:null});  
+    try {
+      var resp=await services.joinNewTeam_service(this.state.userID,this.state.joinTeamCode);
+      toast.success('Team Joined Successfully', {
+        // Set to 8sec
+        position: toast.POSITION.BOTTOM_LEFT, autoClose:3000})
+      this.setState({joinTeamCode:null});
+      var teamsResp=await services.getTeams_service(this.state.userID);  
+      this.setState({teams:teamsResp.teams})
+      
+    } catch (error) {
+      toast.error('Something went wrong', {
+        // Set to 8sec
+        position: toast.POSITION.BOTTOM_LEFT, autoClose:3000})
+    }
+      
   }
 
+  // get info for teamID,teamName and set states
+  async setTeamStates(teamID,teamName) {
+        this.setState({teamID:teamID});
+        this.setState({teamName:teamName});
+        const resp=await services.getTeamDetails_service(teamID);
+        const admins=resp.teamAdmins;
+        this.setState({isAdmin:false})
+        this.setState({teamCode:null});
+        const userID=this.state.userID;
+        var adminFlag=false;
+        admins.some(function(admin,index){
+              if(admin.adminID===userID)
+              {
+                adminFlag=true
+                return true
+              }
+        })
+        if(adminFlag)
+        {
+          this.setState({isAdmin:true});
+          this.setState({teamCode:resp.teamCode});
+        }
+        resp.schedules.forEach(function(sch,index){
+          sch.start=new Date(sch.start)
+          sch.end=new Date(sch.end);
+        })
+        this.setState({events:resp.schedules})
+
+  }
   // navigate to different teams
-  async handleTeamChange(event,index,value) {
-      this.state.teamName=this.state.teams[index-1].teamName;
-      this.state.teamID=this.state.teams[index-1].teamID;
-      this.state.teamCode=this.state.teams[index-1].teamCode;
-      this.state.isAdmin=this.state.teams[index-1].isAdmin;
-      this.state.events=await getEvents(this.state.teamID);
+  handleTeamChange = (event, index, value) =>{
+      const teamID=this.state.teams[index-1].teamID;
+      const teamName=this.state.teams[index-1].teamName;
+      this.setTeamStates(teamID,teamName);
+    //  this.state.events=await getEvents(this.state.teamID);
+  }
+
+  handleLogout() {
+      this.context.logout();
   }
 
 
@@ -267,8 +369,8 @@ class Schedule extends Component {
           <h2 style={{fontSize:'2vw',fontFamily:'Pacifico'}}>LIDO</h2>
         </ToolbarGroup>
         <ToolbarGroup>
-        <DropDownMenu maxHeight={300} value={0} style={{fontSize:'26px'}}>
-        <MenuItem value={0} primaryText="My Teams" disabled={true} />
+        <DropDownMenu maxHeight={300} value={0} style={{fontSize:'26px'}} onChange={this.handleTeamChange}>
+        <MenuItem value={0} primaryText="My Teams" />
         {this.state.teams.map((team,i)=>{
              return (<MenuItem value={i+1} primaryText={team.teamName}/>)
         })}
@@ -277,7 +379,7 @@ class Schedule extends Component {
       <FloatingActionButton mini={true} style={{marginRight:'10px'}} onClick={()=>this.handleAddTeam()}>
       <ContentAdd />
     </FloatingActionButton>
-    <RaisedButton label="Logout" primary={true} />
+    <RaisedButton label="Logout" primary={true} onClick={()=>this.handleLogout()}/>
         </ToolbarGroup>
         </Toolbar>
          {!this.state.teamID &&
@@ -291,9 +393,9 @@ class Schedule extends Component {
           <React.Fragment>
             <h1>{this.state.teamName}</h1>
             { this.state.isAdmin &&
-            <Chip style={{margin:'auto'}} onClick={()=>this.handleCopyCode}>
+            <Chip style={{margin:'auto'}} onClick={()=>this.handleCopyCode()}>
           <Avatar size={32}>C</Avatar>
-          AXU5G80
+          {this.state.teamCode}
         </Chip>
   }
   </React.Fragment>
