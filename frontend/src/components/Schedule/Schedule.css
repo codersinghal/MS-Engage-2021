@@ -23,8 +23,45 @@
     font-size: 22px;
     color: rgb(37, 66, 197)
   }
-  
-  
+  .rbc-event-label {
+    display: none;
+  }
+  /* .rbc-today{
+    background-color: yellow !important;
+  } */
+  .rbc-date-cell{
+    color: black !important;
+  }
+  .rbc-active {
+    background: #bdb2ff !important;
+    box-shadow: none !important;
+    color: #fff !important;
+    border-color: #bdb2ff !important;
+  }
+  .rbc-btn-group button:hover {
+    background: #bdb2ff !important;
+    box-shadow: none !important;
+    color: #fff !important;
+    border-color: #bdb2ff !important;
+  }
+  /* Event Tabs */
+  .rbc-event {
+    background:#bdb2ff !important;
+    
+  }
+  /* Header style */
+  .rbc-header{
+    padding: 10px 3px !important;
+  }
+  /* .rbc-time-view 
+    .rbc-label {
+    display: none;
+    } */
+  /* .rbc-time-view  
+    .rbc-time-content {
+    display: none;
+    } */
+    
   .rbc-date-cell {
     color: rgb(15, 114, 226);
   }

@@ -125,6 +125,7 @@ router.post('/joinNewTeam',async function(req,res){
 
 })
 
+// create new event
 router.post('/createNewEvent',async function(req,res){
     req.body.start=new Date(req.body.start)
     req.body.end=new Date(req.body.end)
@@ -147,6 +148,7 @@ router.post('/createNewEvent',async function(req,res){
                 schedules:data
             }
         },{useFindAndModify:false})
+        
         res.status(200).send(data)
     } catch (error) {
         console.log(error);
@@ -187,9 +189,15 @@ router.put('/updateEvent',async function(req,res){
 
 })
 
+// api to delete event
 router.delete('/deleteEvent',async function(req,res){
     const {scheduleID,teamID}=req.body;
+    console.log(req.body)
     try {
+        if(!scheduleID || !teamID)
+        {
+            throw 'Could not delete event';
+        }
         await Schedule.findByIdAndDelete(scheduleID);
         await Team.updateOne({_id:teamID},{
             $pull:{

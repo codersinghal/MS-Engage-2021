@@ -14,16 +14,18 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Toolbar, ToolbarGroup} from 'material-ui/Toolbar';
 import moment from 'moment'
-import BigCalendar from 'react-big-calendar'
+import NavBar from '../Navbar/Navbar'
 import AuthContext from '../../context/authContext'
 import Stepper from '../IntroStepper/introStepper'
 import services from '../../services/other_services'
 import {toast} from 'react-toastify';
+import EventComponent from '../EventComponent/eventComponent'
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure()
-require("react-big-calendar/lib/css/react-big-calendar.css");
 
-BigCalendar.momentLocalizer(moment);
+const localizer = momentLocalizer(moment);
 
 
 class Schedule extends Component {
@@ -58,6 +60,7 @@ class Schedule extends Component {
 
 
 
+
   // get teams and set states on component mount
   async componentDidMount(){
     console.log(this.context.userID)
@@ -88,6 +91,8 @@ class Schedule extends Component {
 
   //  Allows admin to select slot for new event
   handleSlotSelected(slotInfo) {
+    if(!this.state.isAdmin)
+    return ;
     console.log("Real slotInfo", slotInfo);
     this.setState({
       title: "",
@@ -100,6 +105,8 @@ class Schedule extends Component {
 
   // Allows admin and members to select existing event
   handleEventSelected(event) {
+    if(!this.state.isAdmin)
+    return ;
     console.log("event", event);
     this.setState({
       openEvent: true,
@@ -185,7 +192,7 @@ class Schedule extends Component {
     try {
       const resp= await services.deleteEvent_service(this.state.teamID,this.state.clickedEventID)
       var updatedEvents=this.state.events.slice();
-      updatedEvents.filter(event=>event.scheduleID!==this.state.scheduleID)
+      updatedEvents=updatedEvents.filter(event => event.scheduleID !== this.state.clickedEventID)
       this.setState({ events: updatedEvents });
       toast.success('Event Deleted Successfully', {
         // Set to 3 sec
@@ -297,6 +304,7 @@ class Schedule extends Component {
   handleLogout() {
       this.context.logout();
   }
+  
 
 
   render() {
@@ -364,7 +372,7 @@ class Schedule extends Component {
     ];
     return (
       <React.Fragment>
-        <Toolbar style={{backgroundColor:"white"}}>
+        {/* <Toolbar style={{backgroundColor:"white"}}>
         <ToolbarGroup>
           <h2 style={{fontSize:'2vw',fontFamily:'Pacifico'}}>LIDO</h2>
         </ToolbarGroup>
@@ -381,7 +389,8 @@ class Schedule extends Component {
     </FloatingActionButton>
     <RaisedButton label="Logout" primary={true} onClick={()=>this.handleLogout()}/>
         </ToolbarGroup>
-        </Toolbar>
+        </Toolbar> */}
+        <NavBar/>
          {!this.state.teamID &&
          <div className='content'>
             <Stepper/>
@@ -408,9 +417,12 @@ class Schedule extends Component {
         {/* react-big-calendar library utilized to render calendar*/}
         {this.state.teamID &&
         
-        <BigCalendar
+        <Calendar
+          style={{ flex: 1 , minHeight:"90vh"}}
+          localizer={localizer}
+          startAccessor="start"
+          endAccessor="end"
           events={this.state.events}
-          views={["month", "week", "day"]}
           timeslots={2}
           defaultView="month"
           defaultDate={new Date()}

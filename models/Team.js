@@ -5,6 +5,8 @@ var scheduleID=require('./Schedules')
 const schema = new Schema({
     teamName:{type:String,required:true},
     teamCode:{type:String,required:true},
+    teamSlackChannel:{type:String},
+    teamSlackToken:{type:String},
     teamAdmins:[{
         adminID:{type:mongoose.Types.ObjectId,ref:'user'},
         adminFirstName:{type:String},

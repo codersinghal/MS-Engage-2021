@@ -1,8 +1,16 @@
 import axios from 'axios';
 
-
+const configs = {
+    development: {
+      SERVER_URI: 'http://localhost:4001',
+    },
+    production: {
+      SERVER_URI: 'HEROKU_URI',
+    },
+  };
+const baseURL=configs[process.env.NODE_ENV].SERVER_URI;
 const client = axios.create({
-    baseURL: "http://localhost:4001" 
+    baseURL: baseURL
   });
 
 export default {
@@ -70,8 +78,8 @@ export default {
 
     deleteEvent_service: async function(teamID,scheduleID){
         try {
-            const body={teamID:teamID,scheduleID:scheduleID}
-            const resp=await client.delete('/deleteEvent',body);
+            const data={teamID:teamID,scheduleID:scheduleID}
+            const resp=await client.delete('/deleteEvent',{data:data});
             return resp.data;
         } catch (error) {
             throw error.response.data;

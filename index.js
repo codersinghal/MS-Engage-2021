@@ -3,14 +3,16 @@ require("./config/database").connect();
 cors=require('cors')
 const express = require("express");
 const http = require("http");
+const path = require('path');
 const app = express();
+app.use(express.static(path.join(__dirname, 'frontend/build')));
 
 app.use(express.json());
 app.use(cors())
 const server = http.createServer(app);
 
-const { API_PORT } = process.env;
-const port = process.env.PORT || API_PORT;
+
+const port = process.env.PORT || 4001;
 
 app.use(require('./routes/auth'));
 app.use(require('./routes/others'));
