@@ -14,7 +14,6 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Toolbar, ToolbarGroup} from 'material-ui/Toolbar';
 import moment from 'moment'
-import NavBar from '../Navbar/Navbar'
 import AuthContext from '../../context/authContext'
 import Stepper from '../IntroStepper/introStepper'
 import services from '../../services/other_services'
@@ -52,7 +51,9 @@ class Schedule extends Component {
       openEvent: false,
       joinTeamOpen:false,
       createNewTeamOpen:false,
-      clickedEventID:null
+      clickedEventID:null,
+      slackToken:null,
+      slackChannel:null
     };
     this.state.userID=localStorage.getItem('userID');
     this.handleClose = this.handleClose.bind(this);
@@ -313,7 +314,7 @@ class Schedule extends Component {
     const createTeamActions = [
       <RaisedButton
         label="Create"
-        primary={false}
+        primary={true}
         keyboardFocused={true}
         onClick={()=>{
           this.createNewTeam(),this.handleClose()
@@ -372,12 +373,12 @@ class Schedule extends Component {
     ];
     return (
       <React.Fragment>
-        <Toolbar style={{backgroundColor:"white"}}>
+        <Toolbar style={{backgroundColor:"#1f5156"}}>
         <ToolbarGroup>
-          <h2 style={{fontSize:'2vw',fontFamily:'Pacifico'}}>LIDO</h2>
+          <h2 style={{fontSize:'2vw',fontFamily:'Pacifico',color:'yellow'}}>LIDO</h2>
         </ToolbarGroup>
         <ToolbarGroup>
-        <DropDownMenu maxHeight={300} value={0} style={{fontSize:'26px'}} onChange={this.handleTeamChange}>
+        <DropDownMenu id='ddmenu' maxHeight={300} value={0} style={{fontSize:'26px'}} style={{backgroundColor:"#1f5156",fontSize:'20px'}} onChange={this.handleTeamChange}>
         <MenuItem value={0} primaryText="My Teams" />
         {this.state.teams.map((team,i)=>{
              return (<MenuItem value={i+1} primaryText={team.teamName}/>)
@@ -481,9 +482,27 @@ class Schedule extends Component {
         open={this.state.createNewTeamOpen}
         onRequestClose={this.handleClose}>
           <TextField
-            floatingLabelText="Enter Team Name"
+            hintText="Enter Team Name"
             onChange={e=>{
               this.setState({newTeamName:e.target.value})
+            }}
+            />
+            <br/>
+            <br/>
+            <br/>
+            <TextField
+            hintText="Enter Your Slack Channel Name for this Team"
+            onChange={e=>{
+              this.setState({slackChannel:e.target.value})
+            }}
+            />
+            <br/>
+            <br/>
+            <br/>
+            <TextField
+            hintText="Enter Slack Token for the Channel"
+            onChange={e=>{
+              this.setState({slackToken:e.target.value})
             }}
             />
         </Dialog>
