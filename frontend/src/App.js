@@ -1,6 +1,6 @@
 import './App.css';
 import React,{Component} from 'react';
-import { BrowserRouter, Route, Redirect, Switch,Routes } from "react-router-dom";
+import { BrowserRouter, Route, Redirect, Switch,Routes,withRouter } from "react-router-dom";
 import AuthContext from './context/authContext'
 import Login from './components/Login/login';
 import Register from './components/Register/register' 
@@ -21,6 +21,7 @@ class App extends Component {
   logout = () => {
     this.setState({ token: null, userID: null });
     localStorage.clear();
+
   };
 
   render(){
@@ -36,10 +37,6 @@ class App extends Component {
             }}
           >
             <Switch>
-            {localStorage.getItem('token') && <Redirect from="/" to="/dashboard" exact />}
-                {localStorage.getItem('token') && (
-                  <Redirect from="/register" to="/dashboard" exact />
-                )}
             <Route exact path="/">
               <Login/>
               <Landing/>
@@ -59,4 +56,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default (App);

@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "./login.css";
 import Ripples from "react-ripples";
+import {withRouter} from 'react-router-dom' 
+import {Redirect} from 'react-router-dom'
 import { Link } from "react-router-dom";
 import AuthContext from "../../context/authContext";
 import auth_services from '../../services/auth_services'
@@ -9,10 +11,9 @@ import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure()
 
-export default class Login extends Component {
+class Login extends Component {
 
     static contextType=AuthContext;
-
   constructor(props) {
     super(props);
     this.state = {
@@ -44,6 +45,7 @@ export default class Login extends Component {
            toast.success('Login Successful', {
             // Set to 3 sec
             position: toast.POSITION.BOTTOM_LEFT, autoClose:3000})
+            this.props.history.push("/dashboard"); 
     }).catch((err)=>{
       console.log(err)
       toast.error(err, {
@@ -57,6 +59,8 @@ export default class Login extends Component {
   }
   render() {
     return (
+      <React.Fragment>
+        {localStorage.getItem('token') && <Redirect from="/" to="/dashboard" exact />}
       <div className="card" id="login">
         <div className="card-header">Login</div>
         <div className="card-body">
@@ -94,6 +98,9 @@ export default class Login extends Component {
           </button>
         </Ripples>
       </div>
+      </React.Fragment>
     );
   }
 }
+
+export default withRouter(Login);

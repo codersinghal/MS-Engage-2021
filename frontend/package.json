@@ -17,6 +17,7 @@
     "moment": "^2.29.1",
     "react": "^16.13.0",
     "react-big-calendar": "^0.35.0",
+    "react-datetime-picker": "^3.4.2",
     "react-dom": "^16.13.0",
     "react-ripples": "^2.2.1",
     "react-router-dom": "^5.2.0",

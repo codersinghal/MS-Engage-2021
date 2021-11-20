@@ -5,6 +5,8 @@ import Dialog from "material-ui/Dialog";
 import TextField from "material-ui/TextField";
 import TimePicker from "material-ui/TimePicker";
 import './Schedule.css'
+import {Redirect} from 'react-router-dom'
+import {withRouter} from 'react-router-dom';
 import Avatar from 'material-ui/Avatar';
 import Chip from 'material-ui/Chip';
 import DropDownMenu from 'material-ui/DropDownMenu';
@@ -19,6 +21,7 @@ import Stepper from '../IntroStepper/introStepper'
 import services from '../../services/other_services'
 import {toast} from 'react-toastify';
 import EventComponent from '../EventComponent/eventComponent'
+import DateTimePicker from 'react-datetime-picker';
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import 'react-toastify/dist/ReactToastify.css';
@@ -42,6 +45,7 @@ class Schedule extends Component {
       teamCode:null,
       newTeamName:null,
       joinTeamCode:null,
+      teamMembers:[],
       events: [],
       title: "",
       start: "",
@@ -64,6 +68,8 @@ class Schedule extends Component {
 
   // get teams and set states on component mount
   async componentDidMount(){
+    if(!localStorage.getItem('token'))
+    return 
     console.log(this.context.userID)
     try {
       var myTeams=await services.getTeams_service(this.state.userID)
@@ -130,12 +136,14 @@ class Schedule extends Component {
   }
 
   // sets start time of event
-  handleStartTime = (event, date) => {
+  handleStartTime = (date) => {
+    console.log(date)
     this.setState({ start: date });
   };
 
   // sets end time of event
-  handleEndTime = (event, date) => {
+  handleEndTime = (date) => {
+    console.log(date)
     this.setState({ end: date });
   };
 
@@ -270,9 +278,11 @@ class Schedule extends Component {
         this.setState({teamID:teamID});
         this.setState({teamName:teamName});
         const resp=await services.getTeamDetails_service(teamID);
+        console.log(resp)
         const admins=resp.teamAdmins;
         this.setState({isAdmin:false})
         this.setState({teamCode:null});
+        this.setState({teamMembers:resp.teamMembers})
         const userID=this.state.userID;
         var adminFlag=false;
         admins.some(function(admin,index){
@@ -304,6 +314,7 @@ class Schedule extends Component {
 
   handleLogout() {
       this.context.logout();
+      this.props.history.replace("/");
   }
   
 
@@ -373,6 +384,7 @@ class Schedule extends Component {
     ];
     return (
       <React.Fragment>
+        {!localStorage.getItem('token') && <Redirect from="/dashboard" to="/" exact />}
         <Toolbar style={{backgroundColor:"#1f5156"}}>
         <ToolbarGroup>
           <h2 style={{fontSize:'2vw',fontFamily:'Pacifico',color:'yellow'}}>LIDO</h2>
@@ -444,7 +456,23 @@ class Schedule extends Component {
           modal={false}
           open={this.state.openSlot}
           onRequestClose={this.handleClose}
-        >
+        ><div style={{display:'flex'}}>
+          <div>
+          <div>
+          <DateTimePicker
+        onChange={this.handleStartTime}
+        value={this.state.start}
+      />
+      </div>
+      <br/>
+      <div>
+      <DateTimePicker
+        onChange={this.handleEndTime}
+        value={this.state.end}
+      />
+      </div>
+      <br/>
+      <br/>
           <TextField
             floatingLabelText="Title"
             onChange={e => {
@@ -452,26 +480,27 @@ class Schedule extends Component {
             }}
           />
           <br />
+          <br />
+          <br />
           <TextField
             floatingLabelText="Description"
             onChange={e => {
               this.setDescription(e.target.value);
             }}
           />
-          <TimePicker
-            format="ampm"
-            floatingLabelText="Start Time"
-            minutesStep={5}
-            value={this.state.start}
-            onChange={this.handleStartTime}
-          />
-          <TimePicker
-            format="ampm"
-            floatingLabelText="End Time"
-            minutesStep={5}
-            value={this.state.end}
-            onChange={this.handleEndTime}
-          />
+          <br/>
+      <br/>
+      <br/>
+      </div>
+      <div style={{margin:'auto'}}>
+      <DropDownMenu maxHeight={300} value={0} style={{fontSize:'26px'}} style={{fontSize:'20px'}}>
+        <MenuItem value={0} primaryText="Special Mention Someone" disabled={true}/>
+        {this.state.teamMembers.map((user,i)=>{
+             return (<MenuItem value={i+1} primaryText={user.memberFirstName+" "+user.memberLastName}/>)
+        })}
+      </DropDownMenu>
+      </div>
+      </div>
         </Dialog>
         }
         {// material-ui modal for creating new team
@@ -531,37 +560,55 @@ class Schedule extends Component {
           modal={false}
           open={this.state.openEvent}
           onRequestClose={this.handleClose}
-        >
-          <TextField
-            defaultValue={this.state.title}
-            floatingLabelText="Title"
-            onChange={e => {
-              this.setTitle(e.target.value);
-            }}
-          />
-          <br />
-          <TextField
-            floatingLabelText="Description"
-            multiLine={true}
-            defaultValue={this.state.desc}
-            onChange={e => {
-              this.setDescription(e.target.value);
-            }}
-          />
-          <TimePicker
-            format="ampm"
-            floatingLabelText="Start Time"
-            minutesStep={5}
-            value={this.state.start}
-            onChange={this.handleStartTime}
-          />
-          <TimePicker
-            format="ampm"
-            floatingLabelText="End Time"
-            minutesStep={5}
-            value={this.state.end}
-            onChange={this.handleEndTime}
-          />
+        ><div style={{display:'flex'}}>
+        <div>
+        <div>
+        <DateTimePicker
+      onChange={this.handleStartTime}
+      value={this.state.start}
+    />
+    </div>
+    <br/>
+    <div>
+    <DateTimePicker
+      onChange={this.handleEndTime}
+      value={this.state.end}
+    />
+    </div>
+    <br/>
+    <br/>
+        <TextField
+          floatingLabelText="Title"
+          multiLine={true}
+          defaultValue={this.state.title}
+          onChange={e => {
+            this.setTitle(e.target.value);
+          }}
+        />
+        <br />
+        <br />
+        <br />
+        <TextField
+          floatingLabelText="Description"
+          multiLine={true}
+          defaultValue={this.state.desc}
+          onChange={e => {
+            this.setDescription(e.target.value);
+          }}
+        />
+        <br/>
+    <br/>
+    <br/>
+    </div>
+    <div style={{margin:'auto'}}>
+    <DropDownMenu maxHeight={300} value={0} style={{fontSize:'26px'}} style={{fontSize:'20px'}}>
+      <MenuItem value={0} primaryText="Special Mention Someone" disabled={true}/>
+      {this.state.teamMembers.map((user,i)=>{
+           return (<MenuItem value={i+1} primaryText={user.memberFirstName+" "+user.memberLastName}/>)
+      })}
+    </DropDownMenu>
+    </div>
+    </div>
         </Dialog>
       </div>
       </div>
@@ -571,4 +618,4 @@ class Schedule extends Component {
   }
 }
 
-export default Schedule;
+export default withRouter(Schedule);
