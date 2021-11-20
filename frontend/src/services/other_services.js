@@ -1,16 +1,7 @@
 import axios from 'axios';
 
-const configs = {
-    development: {
-      SERVER_URI: 'http://localhost:4001',
-    },
-    production: {
-      SERVER_URI: 'HEROKU_URI',
-    },
-  };
-const baseURL=configs[process.env.NODE_ENV].SERVER_URI;
 const client = axios.create({
-    baseURL: baseURL
+    baseURL: ""
   });
 
 export default {
