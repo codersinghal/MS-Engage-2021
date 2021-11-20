@@ -372,7 +372,7 @@ class Schedule extends Component {
     ];
     return (
       <React.Fragment>
-        {/* <Toolbar style={{backgroundColor:"white"}}>
+        <Toolbar style={{backgroundColor:"white"}}>
         <ToolbarGroup>
           <h2 style={{fontSize:'2vw',fontFamily:'Pacifico'}}>LIDO</h2>
         </ToolbarGroup>
@@ -389,8 +389,8 @@ class Schedule extends Component {
     </FloatingActionButton>
     <RaisedButton label="Logout" primary={true} onClick={()=>this.handleLogout()}/>
         </ToolbarGroup>
-        </Toolbar> */}
-        <NavBar/>
+        </Toolbar>
+        {/* <NavBar/> */}
          {!this.state.teamID &&
          <div className='content'>
             <Stepper/>
