@@ -22,7 +22,12 @@ const schema = new Schema({
         title:{type:String,required:true},
         desc:{type:String},
         start:{type:Date,required:true},
-        end:{type:Date,required:true}
+        end:{type:Date,required:true},
+        specialMention:[{
+            memberID:{type:mongoose.Types.ObjectId,ref:'user'},
+            memberFirstName:{type:String},
+            memberLastName:{type:String}
+        }]
     }]
 })
 module.exports = mongoose.model('Team', schema)

@@ -26,9 +26,9 @@ export default {
         }
     },
 
-    createNewTeam_service: async function(userID,teamName){
+    createNewTeam_service: async function(userID,teamName,slackChannel,slackToken){
         try {
-            const body={userID:userID,teamName:teamName};
+            const body={userID:userID,teamName:teamName,slackChannel:slackChannel,slackToken:slackToken};
             const resp=await client.post('/createNewTeam',body);
             return resp.data;
         } catch(error){
@@ -46,9 +46,9 @@ export default {
         }
     },
 
-    createNewEvent_service: async function(teamID,title,desc,start,end){
+    createNewEvent_service: async function(teamID,title,desc,start,end,specialMention){
         try{
-            const body={teamID:teamID,title:title,desc:desc,start:start,end:end};
+            const body={teamID:teamID,title:title,desc:desc,start:start,end:end,specialMention:specialMention};
             const resp=await client.post('/createNewEvent',body);
             return resp.data;
         }
@@ -57,10 +57,10 @@ export default {
         }
     },
 
-    updateEvent_service: async function(teamID,title,desc,start,end,eventID){
+    updateEvent_service: async function(teamID,title,desc,start,end,eventID,specialMention){
         try {
             console.log(eventID)
-            const body={teamID:teamID,title:title,desc:desc,start:start,end:end,scheduleID:eventID}
+            const body={teamID:teamID,title:title,desc:desc,start:start,end:end,scheduleID:eventID,specialMention:specialMention}
             const resp=await client.put('/updateEvent',body);
             return resp.data;
         } catch (error) {

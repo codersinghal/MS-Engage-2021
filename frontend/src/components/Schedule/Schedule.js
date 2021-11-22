@@ -46,6 +46,7 @@ class Schedule extends Component {
       newTeamName:null,
       joinTeamCode:null,
       teamMembers:[],
+      specialMention:null,
       events: [],
       title: "",
       start: "",
@@ -93,7 +94,7 @@ class Schedule extends Component {
 
   //closes modals
   handleClose() {
-    this.setState({ openEvent: false, openSlot: false, createNewTeamOpen:false,joinTeamOpen:false });
+    this.setState({ openEvent: false, openSlot: false, createNewTeamOpen:false,joinTeamOpen:false,specialMention:null });
   }
 
   //  Allows admin to select slot for new event
@@ -121,7 +122,8 @@ class Schedule extends Component {
       start: event.start,
       end: event.end,
       title: event.title,
-      desc: event.desc
+      desc: event.desc,
+      specialMention:event.specialMention
     });
   }
 
@@ -149,9 +151,9 @@ class Schedule extends Component {
 
   // allows admin to create new event
   async setNewAppointment() {
-    const { start, end, title, desc } = this.state;
+    const { start, end, title, desc,specialMention } = this.state;
     try {
-      const resp = await services.createNewEvent_service(this.state.teamID,title,desc,start,end)
+      const resp = await services.createNewEvent_service(this.state.teamID,title,desc,start,end,specialMention)
       resp.start=new Date(resp.start)
       resp.end=new  Date(resp.end)
       let events=this.state.events.slice();
@@ -170,15 +172,17 @@ class Schedule extends Component {
 
   //  allows admin to update existing event
   async updateEvent() {
-    const { title, desc, start, end, events, clickedEventID } = this.state;
+    const { title, desc, start, end, events, clickedEventID,specialMention } = this.state;
     try {
-      const updatedEvent=await services.updateEvent_service(this.state.teamID,title,desc,start,end,clickedEventID);
+      console.log(specialMention)
+      const updatedEvent=await services.updateEvent_service(this.state.teamID,title,desc,start,end,clickedEventID,specialMention);
       console.log(updatedEvent)
     const index=events.findIndex(event=> event.scheduleID===clickedEventID)
     console.log(index)
     const updatedEvents=this.state.events.slice();
     updatedEvents[index].title=updatedEvent.title;
     updatedEvents[index].desc=updatedEvent.desc;
+    updatedEvents[index].specialMention=updatedEvent.specialMention
     updatedEvents[index].start=new Date(updatedEvent.start);
     updatedEvents[index].end=new Date(updatedEvent.end);
     this.setState({
@@ -230,11 +234,12 @@ class Schedule extends Component {
     if(!this.state.newTeamName)
         return ;
         try {
-          var resp=await services.createNewTeam_service(this.state.userID,this.state.newTeamName);
+          var resp=await services.createNewTeam_service(this.state.userID,this.state.newTeamName,this.state.slackChannel,this.state.slackToken);
           toast.success('Team Created Successfully', {
             // Set to 8sec
             position: toast.POSITION.BOTTOM_LEFT, autoClose:3000})
           this.setState({newTeamName:null})
+          this.setState({slackChannel:null,slackToken:null});
 
           // making api call to get list of updated teams 
           var teamsResp=await services.getTeams_service(this.state.userID);  
@@ -310,6 +315,12 @@ class Schedule extends Component {
       const teamName=this.state.teams[index-1].teamName;
       this.setTeamStates(teamID,teamName);
     //  this.state.events=await getEvents(this.state.teamID);
+  }
+
+  handleSpecialMention = (event,index,value) =>{
+    const specialMention=this.state.teamMembers[index-1];
+    console.log(specialMention)
+    this.setState({specialMention:specialMention});
   }
 
   handleLogout() {
@@ -438,8 +449,16 @@ class Schedule extends Component {
           events={this.state.events}
           timeslots={2}
           defaultView="month"
+          components={{
+            event: EventComponent
+          }}
           defaultDate={new Date()}
           selectable={true}
+          eventPropGetter={(event) => {
+            const backgroundColor = event.allday ? 'yellow' : 'blue';
+            return { style: { border: "black",
+            borderStyle: "solid" } }
+          }}
           onSelectEvent={event => this.handleEventSelected(event)}
           onSelectSlot={slotInfo => this.handleSlotSelected(slotInfo)}
         />
@@ -493,7 +512,7 @@ class Schedule extends Component {
       <br/>
       </div>
       <div style={{margin:'auto'}}>
-      <DropDownMenu maxHeight={300} value={0} style={{fontSize:'26px'}} style={{fontSize:'20px'}}>
+      <DropDownMenu maxHeight={300} value={0} style={{fontSize:'26px'}} style={{fontSize:'20px'}} onChange={this.handleSpecialMention}>
         <MenuItem value={0} primaryText="Special Mention Someone" disabled={true}/>
         {this.state.teamMembers.map((user,i)=>{
              return (<MenuItem value={i+1} primaryText={user.memberFirstName+" "+user.memberLastName}/>)
@@ -601,7 +620,7 @@ class Schedule extends Component {
     <br/>
     </div>
     <div style={{margin:'auto'}}>
-    <DropDownMenu maxHeight={300} value={0} style={{fontSize:'26px'}} style={{fontSize:'20px'}}>
+    <DropDownMenu maxHeight={300} value={0} style={{fontSize:'26px'}} onChange={this.handleSpecialMention}>
       <MenuItem value={0} primaryText="Special Mention Someone" disabled={true}/>
       {this.state.teamMembers.map((user,i)=>{
            return (<MenuItem value={i+1} primaryText={user.memberFirstName+" "+user.memberLastName}/>)

@@ -7,6 +7,11 @@ const schema = new Schema({
   desc:{type:String,default:null},
   start:{type:Date,required:true},
   end:{type:Date,required:true},
+  specialMention:[{
+    memberID:{type:mongoose.Types.ObjectId,ref:'user'},
+    memberFirstName:{type:String},
+    memberLastName:{type:String}
+  }],
   scheduledInTeam:[{type:mongoose.Types.ObjectId,required:true,ref:'Team'}]
 })
 module.exports = mongoose.model('Schedule', schema)

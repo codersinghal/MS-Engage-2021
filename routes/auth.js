@@ -6,16 +6,11 @@ var jwt=require('jsonwebtoken')
 router.post("/register", async (req, res) => {
 
     // Our register logic starts heres
-    console.log('hello')
     try {
       // Get user input
       const { first_name, last_name, email, password } = req.body;
   
       // Validate user input
-      console.log(first_name)
-      console.log(last_name)
-      console.log(email)
-      console.log(password)
       if (!(email && password && first_name && last_name)) {
         res.status(400).send("All input is required");
       }
@@ -63,7 +58,6 @@ router.post("/register", async (req, res) => {
     try {
       // Get user input
       const { email, password } = req.body;
-      console.log(req.body)
       // Validate user input
       if (!(email && password)) {
         res.status(400).send("All input is required");
