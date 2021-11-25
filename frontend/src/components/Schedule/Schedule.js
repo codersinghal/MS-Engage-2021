@@ -113,8 +113,6 @@ class Schedule extends Component {
 
   // Allows admin and members to select existing event
   handleEventSelected(event) {
-    if(!this.state.isAdmin)
-    return ;
     console.log("event", event);
     this.setState({
       openEvent: true,
@@ -367,6 +365,7 @@ class Schedule extends Component {
       <RaisedButton
         label="Delete"
         secondary={true}
+        disabled={this.state.isAdmin}
         keyboardFocused={true}
         onClick={() => {
           this.deleteEvent(), this.handleClose()
@@ -376,6 +375,7 @@ class Schedule extends Component {
         label="Confirm Edit"
         primary={true}
         keyboardFocused={true}
+        disabled={this.state.isAdmin}
         onClick={this.handleClose}
         onClick={() => {
           this.updateEvent(), this.handleClose()}}

@@ -4,8 +4,7 @@ import axios from 'axios';
 const baseURL=process.env.NODE_ENV==='production'?"https://lit-dusk-25263.herokuapp.com":"http://localhost:4001"
 // create axios client
 const client = axios.create({
-    baseURL: baseURL,
-    headers: { 'x-access-token': localStorage.getItem('token') }
+    baseURL: baseURL
   });
 
 export default {
@@ -23,7 +22,7 @@ export default {
     // request team details
     getTeamDetails_service: async function(teamID){
         try {
-            const resp=await client.get('/myTeamDetails/'+teamID);
+            const resp=await client.get('/myTeamDetails/'+teamID,{headers: { 'x-access-token': localStorage.getItem('token') }});
             return resp.data;
         }
         catch(error){
@@ -35,7 +34,7 @@ export default {
     createNewTeam_service: async function(userID,teamName,slackChannel,slackToken){
         try {
             const body={userID:userID,teamName:teamName,slackChannel:slackChannel,slackToken:slackToken};
-            const resp=await client.post('/createNewTeam',body);
+            const resp=await client.post('/createNewTeam',body,{headers: { 'x-access-token': localStorage.getItem('token') }});
             return resp.data;
         } catch(error){
             throw error.response.data;
@@ -46,7 +45,7 @@ export default {
     joinNewTeam_service: async function(userID,teamCode){
         try {
             const body={userID:userID,teamCode:teamCode};
-            const resp=await client.post('/joinNewTeam',body);
+            const resp=await client.post('/joinNewTeam',body,{headers: { 'x-access-token': localStorage.getItem('token') }});
             return resp.data
         } catch(error){
             throw error.response.data;
@@ -57,7 +56,7 @@ export default {
     createNewEvent_service: async function(teamID,title,desc,start,end,specialMention){
         try{
             const body={teamID:teamID,title:title,desc:desc,start:start,end:end,specialMention:specialMention};
-            const resp=await client.post('/createNewEvent',body);
+            const resp=await client.post('/createNewEvent',body,{headers: { 'x-access-token': localStorage.getItem('token') }});
             return resp.data;
         }
         catch(error){
@@ -70,7 +69,7 @@ export default {
         try {
             console.log(eventID)
             const body={teamID:teamID,title:title,desc:desc,start:start,end:end,scheduleID:eventID,specialMention:specialMention}
-            const resp=await client.put('/updateEvent',body);
+            const resp=await client.put('/updateEvent',body,{headers: { 'x-access-token': localStorage.getItem('token') }});
             return resp.data;
         } catch (error) {
             throw error.response.data;
@@ -81,7 +80,7 @@ export default {
     deleteEvent_service: async function(teamID,scheduleID){
         try {
             const data={teamID:teamID,scheduleID:scheduleID}
-            const resp=await client.delete('/deleteEvent',{data:data});
+            const resp=await client.delete('/deleteEvent',{data:data},{headers: { 'x-access-token': localStorage.getItem('token') }});
             return resp.data;
         } catch (error) {
             throw error.response.data;
