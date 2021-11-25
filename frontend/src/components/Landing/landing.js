@@ -7,8 +7,8 @@ export default class Landing extends Component{
             <React.Fragment>
             <div className="heading">
             <div className="title">
-              <h1>LIDO</h1>
-              <p>Schedule and Book your classes here !!</p>
+              <h1>SchedPut</h1>
+              <p>Organizing Schedules For Teams Simplified!!</p>
             </div>
   
             <div className="thumbnail"></div>

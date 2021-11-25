@@ -2,6 +2,8 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose
 var user=require('./User')
 var scheduleID=require('./Schedules')
+
+// Team schema for db
 const schema = new Schema({
     teamName:{type:String,required:true},
     teamCode:{type:String,required:true},

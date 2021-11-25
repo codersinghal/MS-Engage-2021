@@ -12,12 +12,14 @@ class App extends Component {
     userID: null
   };
 
+  // called on user login success
   login = (token, userID) => {
     this.setState({ token: token, userID: userID });
     localStorage.setItem('token',this.state.token)
     localStorage.setItem('userID',this.state.userID)
   };
 
+  // called on user logout
   logout = () => {
     this.setState({ token: null, userID: null });
     localStorage.clear();

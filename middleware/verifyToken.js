@@ -1,7 +1,9 @@
 const jwt = require("jsonwebtoken");
 
+// get secret token key 
 const config = process.env;
 
+// authentication middleware for api requests
 const verifyToken = (req, res, next) => {
   const token =
     req.body.token || req.query.token || req.headers["x-access-token"];

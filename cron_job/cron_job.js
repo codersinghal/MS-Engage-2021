@@ -10,6 +10,7 @@ async function getScheduledEvents() {
     console.log(currDate)
     console.log(reqDate)
     
+    // get schedules within 24 hrs from now
     try {
         Schedule.find({start:{$gte:currDate,$lte:reqDate}},async function(err,schedules){
             console.log(schedules)
@@ -41,6 +42,7 @@ async function getScheduledEvents() {
                 
             }))
             console.log(messages)
+            // add messages to queue
             queue.addMessageToQueue(messages)
         })
     } catch (error) {
@@ -52,6 +54,7 @@ async function getScheduledEvents() {
 
 exports.cron_job=()=>{
 
+    // run cron job at 11:59 PM every day
     cron.schedule("00 59 23 * * *", () => getScheduledEvents(), {
       scheduled: true,
       timezone: "Asia/Kolkata",

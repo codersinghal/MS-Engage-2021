@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 var teams_sch =require('./Team')
+
+// User schema for db
 const userSchema = new mongoose.Schema({
   first_name: { type: String, default: null },
   last_name: { type: String, default: null },

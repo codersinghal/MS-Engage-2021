@@ -77,10 +77,10 @@ class Schedule extends Component {
     console.log(myTeams)
     myTeams=myTeams.teams;
     this.setState({teams:myTeams})
-    if(myTeams.length>0)
-    {
-      await this.setTeamStates(myTeams[0].teamID,myTeams[0].teamName)
-    }
+    // if(myTeams.length>0)
+    // {
+    //   await this.setTeamStates(myTeams[0].teamID,myTeams[0].teamName)
+    // }
     
     } catch (error) {
       console.log(error)
@@ -398,27 +398,29 @@ class Schedule extends Component {
         {!localStorage.getItem('token') && <Redirect from="/dashboard" to="/" exact />}
         <Toolbar style={{backgroundColor:"#1f5156"}}>
         <ToolbarGroup>
-          <h2 style={{fontSize:'2vw',fontFamily:'Pacifico',color:'yellow'}}>LIDO</h2>
+          <h2 style={{fontSize:'2vw',fontFamily:'Pacifico',color:'yellow',cursor:'pointer'}} onClick={()=>this.setState({teamID:null})}>SchedPut</h2>
         </ToolbarGroup>
         <ToolbarGroup>
         <DropDownMenu id='ddmenu' maxHeight={300} value={0} style={{fontSize:'26px'}} style={{backgroundColor:"#1f5156",fontSize:'20px'}} onChange={this.handleTeamChange}>
-        <MenuItem value={0} primaryText="My Teams" />
+        <MenuItem value={0} primaryText="My Teams" disabled={true} />
         {this.state.teams.map((team,i)=>{
              return (<MenuItem value={i+1} primaryText={team.teamName}/>)
         })}
       </DropDownMenu>
       <RaisedButton label="Join Team" primary={true} onClick={()=>this.handleJoinTeam()}/>
-      <FloatingActionButton mini={true} style={{marginRight:'10px'}} onClick={()=>this.handleAddTeam()}>
+      <FloatingActionButton title='Create a Team' mini={true} style={{marginRight:'10px'}} onClick={()=>this.handleAddTeam()}>
       <ContentAdd />
     </FloatingActionButton>
     <RaisedButton label="Logout" primary={true} onClick={()=>this.handleLogout()}/>
         </ToolbarGroup>
         </Toolbar>
-        {/* <NavBar/> */}
          {!this.state.teamID &&
-         <div className='content'>
+         <React.Fragment>
+         <h2 style={{textAlign:'center',marginTop:'80px'}}>Your Guide to Get Started</h2>
+         <div className='content' style={{background:'https://cms-static.wehaacdn.com/igin-com/images/Capture.3073.jpg'}}>
             <Stepper/>
-         </div>}
+         </div>
+         </React.Fragment>}
          
 
         <div className='App'>
@@ -426,7 +428,7 @@ class Schedule extends Component {
           <React.Fragment>
             <h1>{this.state.teamName}</h1>
             { this.state.isAdmin &&
-            <Chip style={{margin:'auto'}} onClick={()=>this.handleCopyCode()}>
+            <Chip title='Click To Copy Team Code ' style={{margin:'auto'}} onClick={()=>this.handleCopyCode()}>
           <Avatar size={32}>C</Avatar>
           {this.state.teamCode}
         </Chip>
@@ -454,11 +456,11 @@ class Schedule extends Component {
           }}
           defaultDate={new Date()}
           selectable={true}
-          eventPropGetter={(event) => {
-            const backgroundColor = event.allday ? 'yellow' : 'blue';
-            return { style: { border: "black",
-            borderStyle: "solid" } }
-          }}
+          // eventPropGetter={(event) => {
+          //   const backgroundColor = event.allday ? 'yellow' : 'blue';
+          //   return { style: { border: "black",
+          //   borderStyle: "solid" } }
+          // }}
           onSelectEvent={event => this.handleEventSelected(event)}
           onSelectSlot={slotInfo => this.handleSlotSelected(slotInfo)}
         />
@@ -495,7 +497,7 @@ class Schedule extends Component {
           <TextField
             floatingLabelText="Title"
             onChange={e => {
-              this.setTitle(e.target.value);
+              this.setTitle(e.target.value.trim());
             }}
           />
           <br />
@@ -504,7 +506,7 @@ class Schedule extends Component {
           <TextField
             floatingLabelText="Description"
             onChange={e => {
-              this.setDescription(e.target.value);
+              this.setDescription(e.target.value.trim());
             }}
           />
           <br/>
@@ -513,7 +515,7 @@ class Schedule extends Component {
       </div>
       <div style={{margin:'auto'}}>
       <DropDownMenu maxHeight={300} value={0} style={{fontSize:'26px'}} style={{fontSize:'20px'}} onChange={this.handleSpecialMention}>
-        <MenuItem value={0} primaryText="Special Mention Someone" disabled={true}/>
+        <MenuItem value={0} primaryText="Mention Someone" disabled={true}/>
         {this.state.teamMembers.map((user,i)=>{
              return (<MenuItem value={i+1} primaryText={user.memberFirstName+" "+user.memberLastName}/>)
         })}
@@ -532,7 +534,7 @@ class Schedule extends Component {
           <TextField
             hintText="Enter Team Name"
             onChange={e=>{
-              this.setState({newTeamName:e.target.value})
+              this.setState({newTeamName:e.target.value.trim()})
             }}
             />
             <br/>
@@ -541,7 +543,7 @@ class Schedule extends Component {
             <TextField
             hintText="Enter Your Slack Channel Name for this Team"
             onChange={e=>{
-              this.setState({slackChannel:e.target.value})
+              this.setState({slackChannel:e.target.value.trim()})
             }}
             />
             <br/>
@@ -550,7 +552,7 @@ class Schedule extends Component {
             <TextField
             hintText="Enter Slack Token for the Channel"
             onChange={e=>{
-              this.setState({slackToken:e.target.value})
+              this.setState({slackToken:e.target.value.trim()})
             }}
             />
         </Dialog>
@@ -565,7 +567,8 @@ class Schedule extends Component {
           <TextField
             floatingLabelText="Enter Team Code"
             onChange={e=>{
-              this.setState({joinTeamCode:e.target.value})
+              this.setState({joinTeamCode:e.target.value.trim()})
+              
             }}
             />
         </Dialog>
@@ -601,7 +604,7 @@ class Schedule extends Component {
           multiLine={true}
           defaultValue={this.state.title}
           onChange={e => {
-            this.setTitle(e.target.value);
+            this.setTitle(e.target.value.trim());
           }}
         />
         <br />
@@ -612,7 +615,7 @@ class Schedule extends Component {
           multiLine={true}
           defaultValue={this.state.desc}
           onChange={e => {
-            this.setDescription(e.target.value);
+            this.setDescription(e.target.value.trim());
           }}
         />
         <br/>
@@ -621,7 +624,7 @@ class Schedule extends Component {
     </div>
     <div style={{margin:'auto'}}>
     <DropDownMenu maxHeight={300} value={0} style={{fontSize:'26px'}} onChange={this.handleSpecialMention}>
-      <MenuItem value={0} primaryText="Special Mention Someone" disabled={true}/>
+      <MenuItem value={0} primaryText="Mention Someone" disabled={true}/>
       {this.state.teamMembers.map((user,i)=>{
            return (<MenuItem value={i+1} primaryText={user.memberFirstName+" "+user.memberLastName}/>)
       })}

@@ -5,7 +5,9 @@ const User=require('../models/User');
 const Schedule=require('../models/Schedules')
 const Team=require('../models/Team')
 const queue=require('../queue/queue')
+const verifyToken =require('../middleware/verifyToken')
 
+// create uid for team code
 function create_UUID(){
     var dt = new Date().getTime();
     var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -16,6 +18,7 @@ function create_UUID(){
     return uuid;
 }
 
+// verify and add message to queue
 async function checkAndAddToQueue(schedule,team,status){
     console.log(schedule)
     if(!team.teamSlackChannel || !team.teamSlackToken)
@@ -37,7 +40,7 @@ async function checkAndAddToQueue(schedule,team,status){
 }
 
 // get teams of a user
-router.get('/getTeams/:userID',async function(req,res){
+router.get('/myTeams/:userID',verifyToken,async function(req,res){
     const userID=req.params['userID'];
     try {
         User.findById(userID,function(err,classes){
@@ -59,7 +62,7 @@ router.get('/getTeams/:userID',async function(req,res){
 })
 
 // get details of a team
-router.get('/getTeamDetails/:teamID',async function(req,res){
+router.get('/myTeamDetails/:teamID',verifyToken,async function(req,res){
     const teamID=req.params['teamID'];
     try {
         Team.findById(teamID,function(err,classes){
@@ -81,10 +84,11 @@ router.get('/getTeamDetails/:teamID',async function(req,res){
 })
 
 // create new team
-router.post('/createNewTeam',async function(req,res){
+router.post('/createNewTeam',verifyToken,async function(req,res){
     const {userID,teamName,slackChannel,slackToken}=req.body;
     try {
         
+        // create team and add user to admin
         const user=await User.findById(userID);
         const teamCode=create_UUID()
         const teamAdmins=[{adminID:userID,adminFirstName:user.first_name,adminLastName:user.last_name}];
@@ -97,6 +101,7 @@ router.post('/createNewTeam',async function(req,res){
             res.status(500).send('Create new team failed')
             return ;
         }
+        // add team in user teams
         await User.findByIdAndUpdate(userID,{
         $addToSet:{teams:{teamID:newTeam,teamName:teamName}}
         },{ useFindAndModify: false })
@@ -113,9 +118,10 @@ router.post('/createNewTeam',async function(req,res){
 })
 
 // join a team
-router.post('/joinNewTeam',async function(req,res){
+router.post('/joinNewTeam',verifyToken,async function(req,res){
     const {userID,teamCode}=req.body;
     try {
+        // add user to team members
         const user=await User.findById(userID);
         const newTeam=await Team.findOneAndUpdate({teamCode:teamCode},{
             $addToSet:{teamMembers:{memberID:userID,memberFirstName:user.first_name,memberLastName:user.last_name}}
@@ -126,6 +132,7 @@ router.post('/joinNewTeam',async function(req,res){
             res.status(400).send('Joining Team Failed')
             return;
         }
+        // add team to user teams
         await User.findByIdAndUpdate(userID,{
             $addToSet:{teams:{teamID:newTeam,teamName:newTeam.teamName}}
             },{ useFindAndModify: false })
@@ -141,7 +148,7 @@ router.post('/joinNewTeam',async function(req,res){
 })
 
 // create new event
-router.post('/createNewEvent',async function(req,res){
+router.post('/createNewEvent',verifyToken,async function(req,res){
     console.log(req.body.start)
     req.body.start=new Date(req.body.start)
     req.body.end=new Date(req.body.end)
@@ -168,6 +175,8 @@ router.post('/createNewEvent',async function(req,res){
             }
         },{useFindAndModify:false})
         res.status(200).send(data)
+
+        // add message to queue on success
         await checkAndAddToQueue(newSchedule,team,'Created')
     } catch (error) {
         console.log(error);
@@ -176,7 +185,7 @@ router.post('/createNewEvent',async function(req,res){
 })
 
 // api call to update event
-router.put('/updateEvent',async function(req,res){
+router.put('/updateEvent',verifyToken,async function(req,res){
     req.body.start=new Date(req.body.start)
     req.body.end=new Date(req.body.end)
     const {teamID,title,desc,start,end,scheduleID}=req.body;
@@ -204,6 +213,8 @@ router.put('/updateEvent',async function(req,res){
             }
         )
         res.status(200).send(newSchedule);
+
+        // add message to queue on success
         await checkAndAddToQueue(newSchedule,team,'Updated')
     } catch (error) {
         console.log(error)
@@ -213,7 +224,7 @@ router.put('/updateEvent',async function(req,res){
 })
 
 // api to delete event
-router.delete('/deleteEvent',async function(req,res){
+router.delete('/deleteEvent',verifyToken,async function(req,res){
     const {scheduleID,teamID}=req.body;
 
     try {
@@ -229,6 +240,8 @@ router.delete('/deleteEvent',async function(req,res){
             }
         })
         res.status(200).send('Event deleted successfully');
+
+        // add message to queue on success
         await checkAndAddToQueue(newSchedule,team,'Deleted')
     } catch (error) {
         console.log(error);

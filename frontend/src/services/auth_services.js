@@ -9,6 +9,7 @@ const client = axios.create({
 // services for authentication  
 export default {
 
+    // request for signing up
     register_service: async function(first_name,last_name,email,password) {
         try {
             const body={first_name:first_name,last_name:last_name,email:email,password:password};
@@ -20,6 +21,7 @@ export default {
         }
     },
 
+    // request for logging in
     login_service: async function(email,password) {
         try {
             const body={email:email,password:password};

@@ -3,6 +3,8 @@ var router=express.Router();
 const User=require('../models/User');
 var bcrypt=require('bcryptjs')
 var jwt=require('jsonwebtoken')
+
+// api to handle register
 router.post("/register", async (req, res) => {
 
     // Our register logic starts heres
@@ -52,7 +54,8 @@ router.post("/register", async (req, res) => {
     // Our register logic ends here
   });
   
-  router.post("/login", async (req, res) => {
+// api to handle login
+router.post("/login", async (req, res) => {
 
     // Our login logic starts here
     try {

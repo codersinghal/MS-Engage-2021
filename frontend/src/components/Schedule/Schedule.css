@@ -16,19 +16,18 @@
   
   .rbc-month-view{
     flex-basis: 500px !important;
+    cursor: pointer;
   }
   
   .rbc-toolbar-label {
     font-weight: bold;
     font-size: 22px;
-    color: rgb(37, 66, 197)
+    color: rgb(37, 66, 197);
   }
   .rbc-event-label {
     display: none;
   }
-  /* .rbc-today{
-    background-color: yellow !important;
-  } */
+  
   .rbc-date-cell{
     color: black !important;
   }
@@ -46,7 +45,7 @@
   }
   /* Event Tabs */
   .rbc-event {
-    background:#bdb2ff !important;
+    background:rgb(250, 247, 56) !important;
     
   }
   /* Header style */
@@ -69,7 +68,7 @@
     background-color: white;
   }
   .rbc-today {
-    background-color: rgb(161, 201, 240) !important;
+    background-color: rgb(171, 248, 248) !important;
   }
   
   @media (max-width: 480px) {
@@ -79,11 +78,20 @@
   }
 
   .content {
-    width: fit-content;
+    width: 1100px;
     height: 600px;
     position: absolute; /*Can also be `fixed`*/
+    display: flex;
+  align-items: center;
+  justify-content: center;
     left: 0;
     right: 0;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    background: #ADA996;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
     top: 0;
     bottom: 0;
     margin: auto;
