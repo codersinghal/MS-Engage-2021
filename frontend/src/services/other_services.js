@@ -13,7 +13,7 @@ export default {
     // request my teams
     getTeams_service: async function(userID){
         try {
-            const resp=await client.get('/myTeams/'+userID);
+            const resp=await client.get('/myTeams/'+userID,{headers: { 'x-access-token': localStorage.getItem('token') }});
             return resp.data;
         } catch(error){
             throw error.response.data;
