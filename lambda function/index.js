@@ -1,11 +1,12 @@
 const axios=require('axios')
 
 exports.handler = async (event) => {
-    // TODO implement
+    
     const response = {
         statusCode: 200,
         body: JSON.stringify('Hello from Lambda!'),
     };
+    // parse and process queue message
     const jsonObj=JSON.parse(event.Records[0].body)
     console.log(jsonObj)
     let title=jsonObj.title;
@@ -23,6 +24,7 @@ exports.handler = async (event) => {
     {
     specialMention='NA';
     }
+    // make request to Slack API to post message
     const url = 'https://slack.com/api/chat.postMessage';
     const res = await axios.post(url, {
         channel: jsonObj.slackChannel,
