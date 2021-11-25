@@ -5,7 +5,7 @@ import Avatar from 'material-ui/Avatar';
 class EventComponent extends React.Component {
   render() {
     console.log(this.props)
-    const userIcon = this.props.event.specialMention?<Avatar style={{margin:'6px'}} src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWHu3oid1S_3pCE4Vq23yfQHSV2d1zUVgggw&usqp=CAU" />:null;
+    const userIcon = this.props.event.specialMention?<Avatar style={{margin:'6px'}} src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSa5kzzd0I--H2zcak2zlAptAt8zGdI_SVzSg&usqp=CAU" />:null;
 
     return (
       <div style={{display:'flex'}}>
