@@ -26,14 +26,27 @@ It serves the purpose of schedulinng,reminding and rotating responsibilties amon
 * NodeJS
 * ReactJS
 * MongoDB
-* AWS SQS
+* AWS
 * Slack API
 
-## Design
+## Architecture
 <br>
 <br>
 
 
 ![image](https://drive.google.com/uc?export=view&id=1vIn8cVNL_BkJueFSn5TdGSbXS9zaPfE7)
 
+This app is developed with scalability and design principles in mind.Three-Tier archtecture is used, NodeJs for server side,ReactJS for client side and MongoDB as database.
+<br>
 
+* Restful architecture is used at server side with JWT authentication.
+* Client makes API requests to server and server then contacts with DB and AWS Queue.
+* Whenever a schedule is created/updated/deleted, a message is pushed into AWS Queue, which then triggers a custom AWS lambda function.
+* The job of this AWS function is to post the current Queue message to Slack API.
+* Messages are also pushed to the Queue everyday at 11:59 PM notifying for the schedules starting within 24 hrs.This is done by running a cron job scheduled to run at 11:59 PM everyday.
+
+## Slack Integration
+For getting notified of your schedules on Slack, you have to go through following steps:
+* When creating a new team, you will be asked to enter Slack Channel Name and Slack Token for that team.
+* You need to have a workspace in your Slack, if not create a new workspace.
+* In this workspace create a new channel(this channel name is asked while creating team).
