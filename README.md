@@ -47,6 +47,36 @@ This app is developed with scalability and design principles in mind.Three-Tier 
 
 ## Slack Integration
 For getting notified of your schedules on Slack, you have to go through following steps:
-* When creating a new team, you will be asked to enter Slack Channel Name and Slack Token for that team.
+* When creating a new team, you will be asked to enter **Slack Channel Name** and **Slack Token** for that team.
 * You need to have a workspace in your Slack, if not create a new workspace.
 * In this workspace create a new channel(this channel name is asked while creating team).
+* If you dont have already a Slack app in this workspace with incoming webhooks, [follow this](https://slack.com/intl/en-in/help/articles/115005265063-Incoming-webhooks-for-Slack) to setup incoming webhooks. Else just simply go to the already present app and add channel name in **ADD CHANNEL**
+* Now you have a Slack app with incoming webhooks added to channel you want to get notified in.
+* Go to [Your Apps](https://api.slack.com/apps), and open app that you have used to setup webhooks.
+* go to **Add Features And functionality** -> **Permission** -> get Bot user Auth Token and if you dont have **chat:write** scope enabled in **Bot Token Scopes** then add it and reinstall the app.
+* Now use this Token and Channel Name while creating the team.
+
+## How to run locally and deploy this app
+
+**For running locally**:
+
+* Clone this repository.
+* Set up your MongoDB and put your mongo uri in .env file
+* You also need to set your aws credentials in .env file (for security reasons they can't be uploaded to version control)
+* To run the server 
+ > npm i
+ > 
+ > npm start
+* To run the client
+> cd frontend
+> 
+> npm i
+> 
+> npm start
+
+<br>
+
+**For deployment**:
+
+* You need to set the environment variables present in .env file, on the platform you are deploying to(heroku in my case).
+* Also change the base url in axios client present in frontend/src/services/other_services.js and frontend/src/services/auth_services.js
