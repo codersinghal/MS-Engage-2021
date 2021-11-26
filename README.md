@@ -30,6 +30,10 @@ It serves the purpose of schedulinng,reminding and rotating responsibilties amon
 * Slack API
 
 ## Design
-![Alt text](https://drive.google.com/file/d/1vIn8cVNL_BkJueFSn5TdGSbXS9zaPfE7/view?usp=sharing)
+<br>
+<br>
+
+
+![image](https://drive.google.com/uc?export=view&id=1vIn8cVNL_BkJueFSn5TdGSbXS9zaPfE7)
 
 
