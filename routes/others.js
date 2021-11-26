@@ -39,6 +39,11 @@ async function checkAndAddToQueue(schedule,team,status){
         queue.addMessageToQueue([messageData])
 }
 
+// To keep server up
+router.get('/ping',async function(req,res){
+    res.send('Server is up');
+})
+
 // get teams of a user
 router.get('/myTeams/:userID',verifyToken,async function(req,res){
     const userID=req.params['userID'];
