@@ -18,7 +18,7 @@ class EventComponent extends React.Component {
     {this.props.event.desc && <span style={{color:'black'}}> : {this.props.event.desc}</span>}
     </div>
     <div>
-      {this.props.event.specialMention && <span style={{margin:'4px',color:'black'}}><strong style={{color:'black'}}>Mentioned</strong> : {this.props.event.specialMention[0].memberFirstName}</span>}
+    {this.props.event.specialMention && <span style={{margin:'4px',color:'black'}}><strong style={{color:'black'}}>Mentioned</strong> : {this.props.event.specialMention[0].memberFirstName} {this.props.event.specialMention[0].memberLastName}</span>}
     </div>
         {/* <span className="pull-right">
           {bookedIcon}

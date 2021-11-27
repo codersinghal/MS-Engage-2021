@@ -456,11 +456,12 @@ class Schedule extends Component {
           }}
           defaultDate={new Date()}
           selectable={true}
-          // eventPropGetter={(event) => {
-          //   const backgroundColor = event.allday ? 'yellow' : 'blue';
-          //   return { style: { border: "black",
-          //   borderStyle: "solid" } }
-          // }}
+          eventPropGetter={(event) => {
+            const backgroundColor = event.allday ? 'yellow' : 'blue';
+            return { style: { border: "red",
+            borderStyle: "solid"
+           } }
+          }}
           onSelectEvent={event => this.handleEventSelected(event)}
           onSelectSlot={slotInfo => this.handleSlotSelected(slotInfo)}
         />

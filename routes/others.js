@@ -229,7 +229,7 @@ router.put('/updateEvent',verifyToken,async function(req,res){
 })
 
 // api to delete event
-router.delete('/deleteEvent',verifyToken,async function(req,res){
+router.delete('/deleteEvent',async function(req,res){
     const {scheduleID,teamID}=req.body;
 
     try {

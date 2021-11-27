@@ -80,7 +80,7 @@ export default {
     deleteEvent_service: async function(teamID,scheduleID){
         try {
             const data={teamID:teamID,scheduleID:scheduleID}
-            const resp=await client.delete('/deleteEvent',{data:data},{headers: { 'x-access-token': localStorage.getItem('token') }});
+            const resp=await client.delete('/deleteEvent',{data:data});
             return resp.data;
         } catch (error) {
             throw error.response.data;
