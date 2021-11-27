@@ -43,7 +43,7 @@ This app is developed with keeping scalability and design principles in mind.Thr
 * Restful architecture is used at server side with JWT authentication.
 * Client makes API requests to server and server then contacts with DB and AWS Queue.
 * Whenever a schedule is created/updated/deleted, a message is pushed into AWS Queue, which then triggers a custom AWS lambda function.
-* The job of this AWS function is to post the current Queue message to Slack API.
+* The job of this AWS lambda function is to post the current Queue message to Slack API.
 * Messages are also pushed to the Queue everyday at 11:59 PM notifying for the schedules starting within 24 hrs.This is done by running a cron job scheduled to run at 11:59 PM everyday.
 
 ## Slack Integration
