@@ -2,7 +2,7 @@
 
 # SchedPut
 This project is developed as a solution to MS Engage 2021 Challenge.This web app is a simple and efficient tool to organize and manage your individual as well as team schedules.
-It serves the purpose of schedulinng,reminding and rotating responsibilties among members of a team.This web app is built to provide limited but robust features.
+It serves the purpose of scheduling,reminding and rotating responsibilties among members of a team.This web app is built to provide limited but robust features.
 ## Features
 * User Signup and Login.
 * User can create a team and be its admin.
@@ -12,6 +12,7 @@ It serves the purpose of schedulinng,reminding and rotating responsibilties amon
 * Admin can specially mention a team member for a particuler schedule.
 * Members of a team get instantly notified (on Slack) on creation or updation of any schedule.
 * Members of a team get reminded of the schedule(on Slack) 1 day before its start.
+* Simple and descriptive UI.
 * Agenda view to view all events of a team at one place
 ## Tech Stack
 <p align ="center">
@@ -36,7 +37,7 @@ It serves the purpose of schedulinng,reminding and rotating responsibilties amon
 
 ![image](https://drive.google.com/uc?export=view&id=1vIn8cVNL_BkJueFSn5TdGSbXS9zaPfE7)
 
-This app is developed with scalability and design principles in mind.Three-Tier archtecture is used, NodeJs for server side,ReactJS for client side and MongoDB as database.
+This app is developed with keeping scalability and design principles in mind.Three-Tier archtecture is used, NodeJs for server side,ReactJS for client side and MongoDB as database.
 <br>
 
 * Restful architecture is used at server side with JWT authentication.
@@ -53,8 +54,9 @@ For getting notified of your schedules on Slack, you have to go through followin
 * If you dont have already a Slack app in this workspace with incoming webhooks, [follow this](https://slack.com/intl/en-in/help/articles/115005265063-Incoming-webhooks-for-Slack) to setup incoming webhooks. Else just simply go to the already present app and add channel name in **ADD CHANNEL**
 * Now you have a Slack app with incoming webhooks added to channel you want to get notified in.
 * Go to [Your Apps](https://api.slack.com/apps), and open app that you have used to setup webhooks.
-* go to **Add Features And functionality** -> **Permission** -> get Bot user Auth Token and if you dont have **chat:write** scope enabled in **Bot Token Scopes** then add it and reinstall the app.
+* go to **Add Features And functionality** -> **Permissions** -> get Bot user Auth Token (**xoxb-*****) and if you dont have **chat:write** scope enabled in **Bot Token Scopes** then add it and reinstall the app.
 * Now use this Token and Channel Name while creating the team.
+* The other members of this team can join Slack channel. 
 
 ## How to run locally and deploy this app
 
